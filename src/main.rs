@@ -1,22 +1,27 @@
 use std::env;
 use std::fs;
+
+
+struct Config {
+    caesar: bool,
+    file_path:  String,
+}
 fn main() {
-    let args: Vec<String> = env::args().collect();
 
-    let path = &args[1];
+    let mode: Config = parse_args(env::args().collect());
 
-    let contents = match fs::read_to_string(path){
+    let contents = match fs::read_to_string(mode.file_path){
         Ok(result) => result,
         Err(e) => panic!("Error: {e}"),
     };
     //println!("contents: {contents}");
-    let x = ceasar(contents);
+    let x = caesar(contents);
 
     println!("Encrypted: {x}");
 
 }
 
-fn ceasar(plaintext: String ) -> String {
+fn caesar(plaintext: String ) -> String {
     let mut ciphertext: String = Default::default();
     for c in plaintext.chars().enumerate() {
         if (c.1.is_ascii_alphabetic()) {
