@@ -10,5 +10,12 @@ fn main() {
         Err(e) => panic!("Error: {e}"),
     };
     println!("contents: {contents}");
+    ceasar(contents);
 
+}
+
+fn ceasar(plaintext: String ) {
+    for c in plaintext.chars().enumerate() {
+        let x = (c.1 as u8);
+    }
 }
