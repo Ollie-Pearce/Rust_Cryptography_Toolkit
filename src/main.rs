@@ -9,13 +9,23 @@ fn main() {
         Ok(result) => result,
         Err(e) => panic!("Error: {e}"),
     };
-    println!("contents: {contents}");
-    ceasar(contents);
+    //println!("contents: {contents}");
+    let x = ceasar(contents);
+
+    println!("Encrypted: {x}");
 
 }
 
-fn ceasar(plaintext: String ) {
+fn ceasar(plaintext: String ) -> String {
+    let mut ciphertext: String = Default::default();
     for c in plaintext.chars().enumerate() {
-        let x = (c.1 as u8);
+        if (c.1.is_ascii_alphabetic()) {
+            let x = (c.1 as u8);
+            let y = x + 1;
+            ciphertext.insert(c.0, y as char);
+        } else {
+            ciphertext.insert(c.0, c.1);
+        }
     }
+    ciphertext
 }
