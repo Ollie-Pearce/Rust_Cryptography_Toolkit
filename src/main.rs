@@ -3,7 +3,7 @@ use std::fs;
 use std::fmt::Error;
 
 struct Config {
-    caesar: (bool, i32),
+    caesar: (bool, u8),
     file_path:  String,
 }
 fn main() {
@@ -14,7 +14,7 @@ fn main() {
         Ok(result) => result,
         Err(e) => panic!("Error: {e}"),
     };
-    if mode.caesar.0 == true { let x = caesar(contents); 
+    if mode.caesar.0 == true { let x = caesar(contents, mode.caesar.1); 
         println!("Encrypted: {x}");
     }
     
@@ -23,13 +23,14 @@ fn main() {
 
 }
 
-fn caesar(plaintext: String ) -> String {
+fn caesar(plaintext: String , shift: u8) -> String {
     let mut ciphertext: String = Default::default();
     for c in plaintext.chars().enumerate() {
         if c.1.is_ascii_alphabetic() {
-            let x = (c.1 as u8);
-            let y = x + 1;
-            ciphertext.insert(c.0, y as char);
+            let base = if c.1.is_ascii_uppercase() { b'A' } else { b'a' };
+            let offset = c.1 as u8 - base;
+            let shifted = (offset + shift) % 26;
+            ciphertext.insert(c.0, (base + shifted) as char);
         } else {
             ciphertext.insert(c.0, c.1);
         }
@@ -41,8 +42,8 @@ fn parse_args(args: Vec<String>) -> Config {
     for (index, arg) in args.iter().enumerate() {
         if arg == "-caesar" {
 
-            if (args[index+1].parse::<i32>().is_ok()){
-                return Config{ caesar: (true, args[index+1].parse::<i32>().unwrap()), file_path: args[1].clone()}
+            if (args[index+1].parse::<u8>().is_ok()){
+                return Config{ caesar: (true, args[index+1].parse::<u8>().unwrap()), file_path: args[1].clone()}
             } else {
                 panic!("Invalid arguments");
             }
