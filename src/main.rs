@@ -24,18 +24,18 @@ fn main() {
 }
 
 fn caesar(plaintext: String , shift: u8) -> String {
-    let mut ciphertext: String = Default::default();
-    for c in plaintext.chars().enumerate() {
-        if c.1.is_ascii_alphabetic() {
-            let base = if c.1.is_ascii_uppercase() { b'A' } else { b'a' };
-            let offset = c.1 as u8 - base;
+plaintext
+    .chars()
+    .map(|c| {
+        if c.is_ascii_alphabetic() {
+            let base = if c.is_ascii_uppercase() { b'A' } else { b'a' };
+            let offset = c as u8 - base;
             let shifted = (offset + shift) % 26;
-            ciphertext.insert(c.0, (base + shifted) as char);
+            (base + shifted) as char
         } else {
-            ciphertext.insert(c.0, c.1);
+            c
         }
-    }
-    ciphertext
+    }).collect()
 }
 
 fn parse_args(args: Vec<String>) -> Config {
