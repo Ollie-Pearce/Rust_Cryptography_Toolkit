@@ -34,3 +34,12 @@ fn caesar(plaintext: String ) -> String {
     }
     ciphertext
 }
+
+fn parse_args(args: Vec<String>) -> Config {
+    for i in &args {
+        if i == "-caesar" {
+            return Config{ caesar: true, file_path: args[1].clone()}
+        }
+    }
+    Config{ caesar: false, file_path: args[1].clone()}
+}
