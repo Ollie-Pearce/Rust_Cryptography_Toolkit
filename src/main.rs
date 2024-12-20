@@ -73,38 +73,37 @@ fn parse_args(args: Vec<String>) -> Result<ConfigStruct, String> {
         return Err("Not enough arguments. Usage: program [options] <file_path>".to_string());
     }
 
-    let file_path = args.first().unwrap().clone();
+    let file_path = args[0].clone();
 
     let mut caesar_shift: Option<u8> = None;
     let mut vignere_key: Option<String> = None;
 
     let mut i = 1;
-    while i < args.len() - 1 {
-        match args[i].as_str() {
+    let mut iter = args[1..].iter();
 
+    while let Some(arg) = iter.next() {
+        match arg.as_str() {
             "-caesar" => {
-                if i + 1 >= args.len() {
-                    return Err("Missing shift value after -caesar".to_string());
-                }
-                let shift_str = &args[i + 1];
-                caesar_shift = Some(
-                    shift_str
-                        .parse()
-                        .map_err(|_| "Invalid shift value for Caesar cipher".to_string())?,
-                );
-                i += 2;
+                let shift_str = iter
+                    .next()
+                    .ok_or_else(|| "Missing shift value after caesar")?;
+                let shift = shift_str
+                    .parse()
+                    .map_err(|_| "Invalid shift value for caesar")?;
+
+                
+                caesar_shift = Some(shift);
             }
             
             "-vignere" => {
-                if i + 1 >= args.len() {
-                    return Err("Missing key after -vignere".to_string());
-                }
-                vignere_key = Some(args[i + 1].clone());
-                i += 2;
+                let key = iter
+                    .next()
+                    .ok_or_else(|| "Missing key after vignere")?;
+                vignere_key = Some(key.to_string());
             }
 
             _ => {
-                i += 1;
+                {}
             }
         }
     }
