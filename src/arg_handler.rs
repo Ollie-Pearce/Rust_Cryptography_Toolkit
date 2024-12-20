@@ -18,7 +18,6 @@ pub fn parse_args(mut args: Vec<String>) -> Result<ConfigStruct, String> {
     let mut vignere_key: Option<String> = None;
     let mut rsa_key = None;
 
-    let mut i = 1;
     let mut iter = args[1..].iter();
 
     while let Some(arg) = iter.next() {
