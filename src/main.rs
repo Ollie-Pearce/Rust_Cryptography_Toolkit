@@ -2,6 +2,9 @@ use std::env;
 use std::fs;
 use std::fmt::Error;
 mod arg_handler;
+use rand::Rng;
+use reikna::factor::coprime;
+
 fn main() {
     let args: Vec<String> = env::args().collect();
     let Config: arg_handler::ConfigStruct = arg_handler::parse_args(args).unwrap();
@@ -70,7 +73,30 @@ fn vignere(plaintext: &String, key: String) -> String {
 }
 
 
-fn rsa(plaintext: &String, key: (i64, i64) ) -> String {
+fn rsa(plaintext: &String, key: (u64, u64) ) -> String {
+    let pub_key = key.0 * key.1;
+    let pub_key_phi = (key.0-1)*(key.1-1);
+    let mut rng = rand::thread_rng();
+
+    let e = loop {
+        let candidate = rng.gen_range(1..pub_key_phi);
+        if coprime(candidate, pub_key) {
+            break candidate;
+        }
+    };
+    //choose e: 1 < e < phi(pub_key) && coprime (pub_key)
+    //e and phi(pub_key) are the lock
+
+    let d = (1..).find_map(|i| {
+        let candidate = e * i;
+        if candidate % pub_key_phi == 1 {
+            return Some(candidate)
+        } else {
+            return None
+        }
+    });
+    //Choose d such that  d*e % phi(pub_key) = 1
+
     println!("Hello world");
     return "Hello World".to_string();
 }
