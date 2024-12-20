@@ -14,10 +14,7 @@ fn main() {
     args.remove(0);
     let Config: ConfigStruct   = parse_args(args).unwrap();
 
-    let contents = match fs::read_to_string(Config.file_path){
-        Ok(result) => result,
-        Err(e) => panic!("Error: {e}"),
-    };
+    let contents = fs::read_to_string(Config.file_path).expect("Failed to read file");
 
     if let Some(shift) = Config.caesar_shift {
         let x = caesar(&contents, shift);
