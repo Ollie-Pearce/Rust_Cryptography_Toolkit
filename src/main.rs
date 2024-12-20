@@ -41,15 +41,17 @@ plaintext
     }).collect()
 }
 
+//Vignere: Takes an &String plaintext and u8 key
 fn vignere(plaintext: &String, key: String) -> String {
 
+    
     let key_shifts: Vec<u8> = key
     .chars()
     .filter(|c| c.is_ascii_alphanumeric())
     .map(|c| {
         let base = if c.is_ascii_uppercase() { b'A' } else { b'a' };
         c as u8 - base
-    }).collect();
+    }).collect(); //Identify the offset of each character in the key String
 
     let mut key_iter = key_shifts.iter().cycle();
 
@@ -66,7 +68,7 @@ fn vignere(plaintext: &String, key: String) -> String {
         } else {
             c
         }
-    }).collect()
+    }).collect()//Apply polyalphabetic shifts on plaintext and return the result.
 }
 
 fn parse_args(mut args: Vec<String>) -> Result<ConfigStruct, String> {
