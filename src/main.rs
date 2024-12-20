@@ -2,21 +2,31 @@ use std::env;
 use std::fs;
 use std::fmt::Error;
 
-struct Config {
-    caesar: (bool, u8),
-    file_path:  String,
+struct ConfigStruct {
+    caesar_shift: Option<u8>,
+    vignere_key: Option<String>,
+    file_path: String,
 }
+
 fn main() {
 
-    let mode: Config = parse_args(env::args().collect());
+    let mut args: Vec<String> = env::args().collect();
+    args.remove(0);
+    let Config: ConfigStruct   = parse_args(args).unwrap();
 
-    let contents = match fs::read_to_string(mode.file_path){
+    let contents = match fs::read_to_string(Config.file_path){
         Ok(result) => result,
         Err(e) => panic!("Error: {e}"),
     };
-    if mode.caesar.0 == true { let x = caesar(contents, mode.caesar.1); 
+
+    if let Some(shift) = Config.caesar_shift {
+        let x = caesar(contents, shift);
         println!("Encrypted: {x}");
     }
+    
+    /*if mode.vignere.0 == true { let x = vignere(contents); 
+        println!("Encrypted: {x}");
+    }*/
     
 
     
@@ -37,17 +47,77 @@ plaintext
         }
     }).collect()
 }
+/* 
+fn vignere(plaintext: String) -> String {
+    let array = [1, 2, 3, 4, 5];
+    for i in plaintext.chars().enumerate(){
+        if i.1.is_ascii_alphabetic() {
+            let base = if i.1.is_ascii_uppercase() { b'A' } else { b'a' };
+            let offset = c as u8 - base;
+            let shift = array[ (i.0 % 5)];
+            let shifted = (offset + shift) % 26;
+            (base + shifted) as char
+        }
+    }
 
-fn parse_args(args: Vec<String>) -> Config {
-    for (index, arg) in args.iter().enumerate() {
-        if arg == "-caesar" {
 
-            if (args[index+1].parse::<u8>().is_ok()){
-                return Config{ caesar: (true, args[index+1].parse::<u8>().unwrap()), file_path: args[1].clone()}
-            } else {
-                panic!("Invalid arguments");
+    plaintext
+    .chars()
+    .map(|c| {
+        if c.is_ascii_alphabetic() {
+            let base = if c.is_ascii_uppercase() { b'A' } else { b'a' };
+            let offset = c as u8 - base;
+            let shifted = (offset + shift) % 26;
+            (base + shifted) as char
+
+        }
+    })
+}
+*/
+fn parse_args(args: Vec<String>) -> Result<ConfigStruct, String> {
+    if args.len() < 2 {
+        return Err("Not enough arguments. Usage: program [options] <file_path>".to_string());
+    }
+
+    let file_path = args.first().unwrap().clone();
+
+    let mut caesar_shift: Option<u8> = None;
+    let mut vignere_key: Option<String> = None;
+
+    let mut i = 1;
+    while i < args.len() - 1 {
+        match args[i].as_str() {
+
+            "-caesar" => {
+                if i + 1 >= args.len() {
+                    return Err("Missing shift value after -caesar".to_string());
+                }
+                let shift_str = &args[i + 1];
+                caesar_shift = Some(
+                    shift_str
+                        .parse()
+                        .map_err(|_| "Invalid shift value for Caesar cipher".to_string())?,
+                );
+                i += 2;
+            }
+            
+            "-vignere" => {
+                if i + 1 >= args.len() {
+                    return Err("Missing key after -vignere".to_string());
+                }
+                vignere_key = Some(args[i + 1].clone());
+                i += 2;
+            }
+
+            _ => {
+                i += 1;
             }
         }
     }
-    Config{ caesar: (false, 0),file_path: args[1].clone()}
+
+    Ok(ConfigStruct {
+        caesar_shift,
+        vignere_key,
+        file_path,
+    })
 }
