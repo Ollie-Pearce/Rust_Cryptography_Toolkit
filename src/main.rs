@@ -15,6 +15,10 @@ fn main() {
     if let Some(key) = Config.vignere_key {
         println!("Encrypted: {}", vignere(&contents, key));
     }
+
+    if let Some(key) = Config.rsa_key {
+        println!("Encrypted: {}", rsa(&contents, key));
+    }
 }
 
 //caesar: Takes an &String plaintext and u8 key 
@@ -65,3 +69,8 @@ fn vignere(plaintext: &String, key: String) -> String {
     }).collect() //Apply polyalphabetic shifts on plaintext and return the result.
 }
 
+
+fn rsa(plaintext: &String, key: (i64, i64) ) -> String {
+    println!("Hello world");
+    return "Hello World".to_string();
+}
