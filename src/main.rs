@@ -94,9 +94,14 @@ fn rsa(plaintext: &String, key: (u64, u64) ) -> String {
         } else {
             return None
         }
-    });
+    }).unwrap();
     //Choose d such that  d*e % phi(pub_key) = 1
 
-    println!("Hello world");
+    //encrypt = phi(pub_key), e
+    //decrypt = phi(pub_key), d
+
+    println!("Ecryption keys: {pub_key_phi} {e}");
+    println!("Decryption keys: {pub_key_phi} {d}");
+
     return "Hello World".to_string();
 }
