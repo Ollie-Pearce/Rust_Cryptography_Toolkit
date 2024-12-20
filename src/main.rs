@@ -9,10 +9,8 @@ struct ConfigStruct {
 }
 
 fn main() {
-
-    let mut args: Vec<String> = env::args().collect();
-    args.remove(0);
-    let Config: ConfigStruct   = parse_args(args).unwrap();
+    let args: Vec<String> = env::args().collect();
+    let Config: ConfigStruct = parse_args(args).unwrap();
 
     let contents = fs::read_to_string(Config.file_path)
         .expect("Failed to read file");
@@ -68,7 +66,9 @@ fn vignere(plaintext: &String, key: String) -> String {
     }).collect()
 }
 
-fn parse_args(args: Vec<String>) -> Result<ConfigStruct, String> {
+fn parse_args(mut args: Vec<String>) -> Result<ConfigStruct, String> {
+    args.remove(0);
+
     if args.len() < 2 {
         return Err("Not enough arguments. Usage: program [options] <file_path>".to_string());
     }
