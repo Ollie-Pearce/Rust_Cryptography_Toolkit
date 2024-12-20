@@ -1,7 +1,7 @@
 pub struct ConfigStruct {
     pub caesar_shift: Option<u8>,
     pub vignere_key: Option<String>,
-    pub rsa_key: Option<(i64, i64)>,
+    pub rsa_key: Option<(u64, u64)>,
     pub file_path: String,
 }
 
@@ -40,8 +40,8 @@ pub fn parse_args(mut args: Vec<String>) -> Result<ConfigStruct, String> {
 
                 let key_2_str = iter.next().ok_or_else(||"Missing second RSA key")?;
 
-                let key_1 = key_1_str.parse::<i64>().map_err(|_|"Error parsing RSA key 1 into integer")?;
-                let key_2 = key_2_str.parse::<i64>().map_err(|_|"Error parsing RSA key 2 into integer")?;
+                let key_1 = key_1_str.parse::<u64>().map_err(|_|"Error parsing RSA key 1 into integer")?;
+                let key_2 = key_2_str.parse::<u64>().map_err(|_|"Error parsing RSA key 2 into integer")?;
                 
                 rsa_key = Some((key_1, key_2));
             }
