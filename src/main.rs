@@ -20,16 +20,16 @@ fn main() {
     };
 
     if let Some(shift) = Config.caesar_shift {
-        let x = caesar(contents.clone(), shift);
+        let x = caesar(&contents, shift);
         println!("Encrypted: {x}");
     }
     if let Some(key) = Config.vignere_key {
-        let y = vignere(contents.clone(), key);
+        let y = vignere(&contents, key);
         println!("Encrypted: {y}");
     }
 }
 
-fn caesar(plaintext: String , shift: u8) -> String {
+fn caesar(plaintext: &String , shift: u8) -> String {
 plaintext
     .chars()
     .map(|c| {
@@ -44,7 +44,7 @@ plaintext
     }).collect()
 }
 
-fn vignere(plaintext: String, key: String) -> String {
+fn vignere(plaintext: &String, key: String) -> String {
 
     let key_shifts: Vec<u8> = key
     .chars()
