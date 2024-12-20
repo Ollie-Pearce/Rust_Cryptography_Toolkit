@@ -14,15 +14,14 @@ fn main() {
     args.remove(0);
     let Config: ConfigStruct   = parse_args(args).unwrap();
 
-    let contents = fs::read_to_string(Config.file_path).expect("Failed to read file");
+    let contents = fs::read_to_string(Config.file_path)
+        .expect("Failed to read file");
 
     if let Some(shift) = Config.caesar_shift {
-        let x = caesar(&contents, shift);
-        println!("Encrypted: {x}");
+        println!("Encrypted: {}", caesar(&contents, shift));
     }
     if let Some(key) = Config.vignere_key {
-        let y = vignere(&contents, key);
-        println!("Encrypted: {y}");
+        println!("Encrypted: {}", vignere(&contents, key));
     }
 }
 
