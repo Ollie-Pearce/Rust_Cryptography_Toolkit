@@ -20,17 +20,13 @@ fn main() {
     };
 
     if let Some(shift) = Config.caesar_shift {
-        let x = caesar(contents, shift);
+        let x = caesar(contents.clone(), shift);
         println!("Encrypted: {x}");
     }
-    
-    /*if mode.vignere.0 == true { let x = vignere(contents); 
-        println!("Encrypted: {x}");
-    }*/
-    
-
-    
-
+    if let Some(key) = Config.vignere_key {
+        let y = vignere(contents.clone(), key);
+        println!("Encrypted: {y}");
+    }
 }
 
 fn caesar(plaintext: String , shift: u8) -> String {
@@ -47,19 +43,18 @@ plaintext
         }
     }).collect()
 }
-/* 
-fn vignere(plaintext: String) -> String {
-    let array = [1, 2, 3, 4, 5];
-    for i in plaintext.chars().enumerate(){
-        if i.1.is_ascii_alphabetic() {
-            let base = if i.1.is_ascii_uppercase() { b'A' } else { b'a' };
-            let offset = c as u8 - base;
-            let shift = array[ (i.0 % 5)];
-            let shifted = (offset + shift) % 26;
-            (base + shifted) as char
-        }
-    }
 
+fn vignere(plaintext: String, key: String) -> String {
+
+    let key_shifts: Vec<u8> = key
+    .chars()
+    .filter(|c| c.is_ascii_alphanumeric())
+    .map(|c| {
+        let base = if c.is_ascii_uppercase() { b'A' } else { b'a' };
+        c as u8 - base
+    }).collect();
+
+    let mut key_iter = key_shifts.iter().cycle();
 
     plaintext
     .chars()
@@ -67,13 +62,16 @@ fn vignere(plaintext: String) -> String {
         if c.is_ascii_alphabetic() {
             let base = if c.is_ascii_uppercase() { b'A' } else { b'a' };
             let offset = c as u8 - base;
+            let shift = key_iter.next().unwrap();
             let shifted = (offset + shift) % 26;
             (base + shifted) as char
 
+        } else {
+            c
         }
-    })
+    }).collect()
 }
-*/
+
 fn parse_args(args: Vec<String>) -> Result<ConfigStruct, String> {
     if args.len() < 2 {
         return Err("Not enough arguments. Usage: program [options] <file_path>".to_string());
