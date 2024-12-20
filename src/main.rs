@@ -2,7 +2,6 @@ use std::env;
 use std::fs;
 use std::fmt::Error;
 mod arg_handler;
-
 fn main() {
     let args: Vec<String> = env::args().collect();
     let Config: arg_handler::ConfigStruct = arg_handler::parse_args(args).unwrap();
