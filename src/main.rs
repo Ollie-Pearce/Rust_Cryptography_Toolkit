@@ -23,6 +23,9 @@ fn main() {
     }
 }
 
+//caesar: Takes an &String plaintext and u8 key 
+//returns the result of a map() which applies a closure to shift 
+//each alphabetic char in plaintext by the value of key
 fn caesar(plaintext: &String , shift: u8) -> String {
 plaintext
     .chars()
