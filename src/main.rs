@@ -1,25 +1,32 @@
 use std::env;
 use std::fs;
 use std::fmt::Error;
+use std::process::abort;
 mod arg_handler;
 use rand::Rng;
 use reikna::factor::coprime;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    let Config: arg_handler::ConfigStruct = arg_handler::parse_args(args).unwrap();
 
-    let contents = fs::read_to_string(Config.file_path)
+    let config = match arg_handler::parse_args(args){
+        Ok(config) => config,
+        Err(e) => return print_help(),
+    };
+
+
+
+    let contents = fs::read_to_string(config.file_path)
         .expect("Failed to read file");
 
-    if let Some(shift) = Config.caesar_shift {
+    if let Some(shift) = config.caesar_shift {
         println!("Encrypted: {}", caesar(&contents, shift));
     }
-    if let Some(key) = Config.vignere_key {
+    if let Some(key) = config.vignere_key {
         println!("Encrypted: {}", vignere(&contents, key));
     }
 
-    if let Some(key) = Config.rsa_key {
+    if let Some(key) = config.rsa_key {
         println!("Encrypted: {}", rsa(&contents, key));
     }
 }
@@ -104,4 +111,13 @@ fn rsa(plaintext: &String, key: (u64, u64) ) -> String {
     println!("Decryption keys: {pub_key_phi} {d}");
 
     return "Hello World".to_string();
+}
+
+
+fn print_help() {
+    println!("Ciphers: ");
+    println!("\t -ceaesar");
+    println!("\t -vignere");
+    println!("\t -rsa");
+    ()
 }
