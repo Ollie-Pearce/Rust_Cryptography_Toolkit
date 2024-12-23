@@ -25,7 +25,6 @@ fn main() {
     if let Some(key) = config.vignere_key {
         println!("Encrypted: {}", vignere(&contents, key));
     }
-
     if let Some(key) = config.rsa_key {
         println!("Encrypted: {}", rsa(&contents, key));
     }
@@ -115,9 +114,10 @@ fn rsa(plaintext: &String, key: (u64, u64) ) -> String {
 
 
 fn print_help() {
+    println!("cargo run [FILEPATH] [CIPHER] [KEY]");
     println!("Ciphers: ");
-    println!("\t -ceaesar");
-    println!("\t -vignere");
-    println!("\t -rsa");
+    println!("\t -ceaesar [SHIFT]");
+    println!("\t -vignere [KEY]");
+    println!("\t -rsa [KEY 1] [KEY 2]");
     ()
 }
