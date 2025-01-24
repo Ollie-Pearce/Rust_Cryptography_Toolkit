@@ -33,6 +33,7 @@ fn main() {
 //caesar: Takes an &String plaintext and u8 key 
 //returns the result of a map() which applies a closure to shift 
 //each alphabetic char in plaintext by the value of key
+//Example usage: cargo run -- src/test.txt -caesar 8
 fn caesar(plaintext: &String , shift: u8) -> String {
 plaintext
     .chars()
@@ -49,6 +50,7 @@ plaintext
 }
 
 //Vignere: Takes an &String plaintext and u8 key
+//Example usage: cargo run -- src/test.txt -vignere SECRET
 fn vignere(plaintext: &String, key: String) -> String {
 
     
