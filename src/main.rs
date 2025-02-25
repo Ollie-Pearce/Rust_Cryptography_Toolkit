@@ -208,11 +208,30 @@ fn rsa(plaintext: &String, key: (u64, u64)) -> String {
 }
 
 
+// MD5: Bad things are going to happen if you use this in any meaningful application due to arbitrary hashing collisions
+// Takes an &String plaintext and returns its MD5 hash as a String
+fn md5(plaintext: &String) -> String {
+    // TODO: Implement MD5 hashing algorithm
+    // Step 1: Initialise state variables
+
+    // Step 2: Pad the message to make its length a multiple of 512 bits
+
+    // Step 3: Divide the message into 512-bit blocks
+
+    // Step 4: Process each block using 64 rounds of transformations
+
+    // Step 5: Update the state variables
+
+    // Step 6: Concatenate the final state to get a 128-bit hash
+    String::new()
+}
+
 fn print_help() {
     println!("cargo run [FILEPATH] [CIPHER] [KEY]");
     println!("Ciphers: ");
-    println!("\t -ceaesar [SHIFT]");
+    println!("\t -caesar [SHIFT]");
     println!("\t -vignere [KEY]");
     println!("\t -rsa [KEY 1] [KEY 2]");
+    println!("\t -md5");
     ()
 }
