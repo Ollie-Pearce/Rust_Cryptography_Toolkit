@@ -1,23 +1,23 @@
+
 use std::env;
 use std::fs;
-use std::fmt::Error;
-use std::process::abort;
 use rand::Rng;
 use reikna::factor::coprime;
 use base64;
 //use modinverse::modinverse;
+mod utils;
 mod arg_handler;
-mod mod_pow;
+
+use utils::md5::{pad_message, transform};
+use utils::rsa::mod_pow;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
 
     let config = match arg_handler::parse_args(args){
         Ok(config) => config,
-        Err(e) => return print_help(),
+        Err(_e) => return print_help(),
     };
-
-
 
     let contents = fs::read_to_string(config.file_path)
         .expect("Failed to read file");
@@ -31,6 +31,10 @@ fn main() {
     if let Some(key) = config.rsa_key {
         println!("Encrypted: {}", rsa(&contents, key));
     }
+    if config.md5 {
+        println!("MD5 Hash: {}", md5(&contents));
+    }
+
 }
 
 //caesar: Takes an &String plaintext and u8 key 
@@ -213,18 +217,25 @@ fn rsa(plaintext: &String, key: (u64, u64)) -> String {
 fn md5(plaintext: &String) -> String {
     // TODO: Implement MD5 hashing algorithm
     // Step 1: Initialise state variables
+    let a: u32 = 0x67452301;
+    let b: u32 = 0xEFCDAB89;
+    let c: u32 = 0x98BADCFE;
+    let d: u32 = 0x10325476;
 
     // Step 2: Pad the message to make its length a multiple of 512 bits
+    let message_bytes = plaintext.as_bytes().to_vec();
+    let padded = pad_message::pad_message(&message_bytes); // Use the function from pad_message module
 
     // Step 3: Divide the message into 512-bit blocks
+    let blocks = padded.chunks_exact(64).map(|chunk| chunk.to_vec()).collect::<Vec<Vec<u8>>>();
 
-    // Step 4: Process each block using 64 rounds of transformations
+    // Step 4: Perform the MD5 transformation
+    let (new_a, new_b, new_c, new_d) = transform::md5_transform(&blocks, a, b, c, d); // Use the transformation function from transform module
 
-    // Step 5: Update the state variables
-
-    // Step 6: Concatenate the final state to get a 128-bit hash
-    String::new()
+    // Step 5: Return the final MD5 hash as a hexadecimal string
+    format!("{:08x}{:08x}{:08x}{:08x}", new_a, new_b, new_c, new_d)
 }
+
 
 fn print_help() {
     println!("cargo run [FILEPATH] [CIPHER] [KEY]");
